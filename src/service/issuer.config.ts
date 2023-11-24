@@ -17,14 +17,17 @@ export const  getDid =async (provider:string,alias:string) => {
   return new Promise(async(resolve, reject) => {
 
      try{
+      console.log(1)
         const identifier = await agent.didManagerGetByAlias({
            alias: alias,
            provider: provider
          })
+         console.log(2)
          if (!identifier) throw Error('Identifier not found')
          resolve(identifier)
      }catch (error) {
-      reject(' ');
+      console.log(3)
+      resolve(' ');
   }
       
   })
@@ -35,8 +38,8 @@ export const didCreate =  async (provider:string,alias:string) => {
 
      try{
       const issuer = await agent.didManagerGetOrCreate({ provider: provider, alias: alias })
-         if (!identifier) throw Error('Identifier not found')
-         resolve(identifier)
+        
+         resolve(issuer)
      }catch (error) {
       reject(error);
   }

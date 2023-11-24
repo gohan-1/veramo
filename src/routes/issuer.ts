@@ -47,11 +47,10 @@ issueRouter.get('/getDid', async (req,res,next)=>{
         const provider: any = req.query.provider
         const alias: any = req.query.alias
         const identifier = await getDidDetails(provider,alias)
-        if (!identifier) throw Error('Identifier not found')
-         if(identifier){
+         if(identifier != ' '){
             res.status(200).json({success:true, data:identifier, status:200});
          }else{
-
+            res.status(200).json({success:true, data:'identifier not found', status:200});
          }
 
     } catch (error) {
@@ -67,15 +66,12 @@ issueRouter.get('/CreateDid', async (req,res,next)=>{
         const alias: any = req.query.alias
         const identifier = await getDidDetails(provider,alias)
 
-        if(identifier){
+        if(!identifier){
             res.status(200).json({success:true, data:identifier, status:200});
          }else{
             const did = await createDid(provider,alias)
-         }
-
-        const issuer = await agent.didManagerGetOrCreate({ provider: 'did:key', alias: 'myIssuer' })
-        agents=issuer
-        res.status(200).json({success:true, data:issuer, status:200});
+            res.status(200).json({success:true, data:did, status:200});
+         }     
     } catch (error) {
         next(error);
     }
