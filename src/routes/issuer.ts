@@ -3,9 +3,10 @@ import createError from 'http-errors'
 // import moment from 'moment'
 // import {didimportants} from '../config/importants'
 // // import {loggerWeb} from '../config/logger');
-import {createSchema,getSchemaDetails,getAllSchemaDetails} from '../controllers/issue.controller.ts'
+import {createSchema,getSchemaDetails,getAllSchemaDetails,getDidDetails,createDid} from '../controllers/issue.controller.ts'
 // // import {verifySign} from '../middleware/verify.middleware');
 import bodyParser from 'body-parser'
+
 
 import  agent from '../setup-local.ts'
 import { json } from 'stream/consumers';
@@ -43,40 +44,34 @@ var agents;
 
 issueRouter.get('/getDid', async (req,res,next)=>{
     try {
-        console.log(true)
+        const provider: any = req.query.provider
+        const alias: any = req.query.alias
+        const identifier = await getDidDetails(provider,alias)
+        if (!identifier) throw Error('Identifier not found')
+         if(identifier){
+            res.status(200).json({success:true, data:identifier, status:200});
+         }else{
 
-        if (agents){
-            res.status(200).json({success:true, data:agents, status:200});
+         }
 
-        
-        }
-        console.log(agent)
-        const identifier = await agent.didManagerGetByAlias({
-           alias: 'myIssuer',
-           provider: 'did:key'
-         })
-
-
-        const issuer = await agent.didManagerGetOrCreate({ provider: 'did:key', alias: 'myIssuer' })
-        agents=issuer
-        res.status(200).json({success:true, data:issuer, status:200});
     } catch (error) {
-        next(error);
+        // res.status(200).json({success:true, data:'identifer not found', status:200});
+        next(error)
     }
 });
   
 
-issueRouter.get('/did', async (req,res,next)=>{
+issueRouter.get('/CreateDid', async (req,res,next)=>{
     try {
-        console.log(true)
+        const provider: any = req.query.provider
+        const alias: any = req.query.alias
+        const identifier = await getDidDetails(provider,alias)
 
-        if (agents){
-            res.status(200).json({success:true, data:agents, status:200});
-
-        
-        }
-        console.log(agent)
-
+        if(identifier){
+            res.status(200).json({success:true, data:identifier, status:200});
+         }else{
+            const did = await createDid(provider,alias)
+         }
 
         const issuer = await agent.didManagerGetOrCreate({ provider: 'did:key', alias: 'myIssuer' })
         agents=issuer

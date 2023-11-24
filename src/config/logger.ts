@@ -31,7 +31,7 @@ export const webLogger = winston.createLogger({
   ]
 });
 
-const sdkLogger = winston.createLogger({
+export const sdkLogger = winston.createLogger({
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.printf(({ level, message, timestamp }) => {

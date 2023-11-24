@@ -5,9 +5,10 @@ import {forEach, keys}  from 'lodash'
 import enjoi  from 'enjoi'
 import {buildJsonSchema}  from '../utils/jsonSchema.ts'
 import moment  from 'moment'
-import {createSchemaInTable,getSchemaByKey,getAllSchema}  from '../helpers/schema.helper.ts'
+import {createSchemaInTable,getSchemaByKey,getAllSchema,}  from '../helpers/schema.helper.ts'
 // import {createVcRequest}  from '../service/issuerConfig'
 // import {loggerWeb} = from '../config/logger'
+import {getDid,didCreate} from '../service/issuer.config.ts'
 import {messageConstants, vcConstants}  from '../config/constants.ts'
 // const {createCryptograph} = from '../utils/tech5Integration'
 import dotenv  from 'dotenv'
@@ -47,6 +48,25 @@ export const getAllSchemaDetails = async () =>{
         throw new Error(error.message);
     }
 };
+
+export const getDidDetails =async (alias,provider)=>{
+
+    try {
+        return await getDid(alias,provider);
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export  const createDid = async (alias,provider)=>{
+
+    try {
+        return await didCreate(alias,provider);
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
 
 
 // const createVCrequest = async (req,res)=>{
