@@ -1,0 +1,1895 @@
+openapi: 3.0.0
+info:
+  title: Earthid SSI Layer
+  version: 2.0.0
+  description: This the SSI Layer of Earthid
+  contact:
+    email: vishnu.pradeep@ults.in
+    name: API Support
+externalDocs:
+  description: README - GITLAB
+  url: 'https://gitlab.com/Vishnu2611/earthid-ssi-js/-/blob/dev/README.md'
+servers:
+  - url: 'https://ssi-gbg.myearth.id'
+    description: Issuer Appnet
+  - url: 'https://ssi-verifier.myearth.id '
+    description: Verifier Appnet
+  - url: 'http://15.207.193.210:8082'
+    description: Issuer Appnet - UAT
+  - url: 'http://15.207.193.210:8083'
+    description: Verifier Appnet - UAT
+  - url: 'http://localhost:8080'
+    description: Issuer Appnet - Dev
+  - url: 'http://localhost:8081'
+    description: Verifier Appnet - Dev
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+paths:
+  /api/issuer/did:
+    get:
+      summary: Retrieve Issuer's DID
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Issuer
+      responses:
+        '200':
+          description: Issuer's DID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: DID is retrieved
+                  data:
+                    type: string
+                    example: 'did:earthid:testnet:AabfxxZm8PYRWGDsa5DtVwJsnCAxBpyoQLzxFcT9y1sE;earthid:testnet:fid=0.0.216007'
+        '400':
+          description: DID retrieval failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Invalid DID
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized
+  '/api/issuer/did/{did}':
+    delete:
+      summary: Delete Issuer DID
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Issuer
+      parameters:
+        - in: path
+          name: did
+          schema:
+            type: string
+          required: true
+      responses:
+        '202':
+          description: Issuer DID deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: boolean
+                  message:
+                    type: string
+                    example: 'Issuer did - did:earthid:testnet:GftCjzCHotPs565TBu1rpKgx4j1WWECgrKpmSUyzx7m9;earthid:testnet:fid=0.0.277146 has been deleted'
+        '400':
+          description: Issuer DID deletion failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Invalid DID
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized
+  /api/issuer/createSchema:
+    post:
+      summary: Create a Schema for Verifiable Credential.
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Issuer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                schemaName:
+                  type: string
+                  example: MembershipType
+                  description: Name of Schema
+                description:
+                  type: string
+                  example: Membership Document for GBA Credential
+                  description: Description about schema
+                attributes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      attributeName:
+                        type: string
+                        description: Name of the attribute
+                        example: firstName
+                      type:
+                        type: string
+                        description: Type of the attribute
+                        example: string
+                      description:
+                        type: string
+                        description: Description of the attribute
+                        example: First name of the user
+                      required:
+                        type: boolean
+                        description: Attribute is required or not
+                      maxLength:
+                        type: number
+                        description: Maximum length of attribute
+                expiration:
+                  type: object
+                  properties:
+                    value:
+                      type: number
+                    unit:
+                      type: string
+                      enum:
+                        - years
+                        - months
+                        - days
+                  example:
+                    value: 1
+                    unit: years
+                  description: Expiration of Credential
+                dependantSchemas:
+                  type: array
+                  items:
+                    type: string
+                    example: GBAMembershipType
+              required:
+                - schemaName
+                - description
+                - attributes
+                - dependantSchemas
+      responses:
+        '201':
+          description: Schema created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: The Schema is created
+                  status:
+                    type: number
+                    example: 201
+        '400':
+          description: Verifiable Credential creation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Schema creation failed!!
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized
+  '/api/issuer/schema/{schemaName}':
+    get:
+      summary: Retrieve schema Details
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Issuer
+      parameters:
+        - in: path
+          name: schemaName
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Schema Details retrieval success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      $schema:
+                        type: string
+                        format: uri
+                        example: 'http://json-schema.org/draft-04/schema#'
+                      title:
+                        type: string
+                        example: MembershipType
+                      description:
+                        type: string
+                        example: Membership Document for GBA Credential
+                      type:
+                        type: string
+                        example: object
+                      properties:
+                        type: object
+                        properties:
+                          firstName:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                example: string
+                              pattern:
+                                type: string
+                                example: '[a-zA-Z]+$'
+                              description:
+                                type: string
+                                example: First name of the user
+                              maxLength:
+                                type: string
+                                example: '4'
+                          lastName:
+                            type: object
+                            properties:
+                              type:
+                                type: string
+                                example: string
+                              pattern:
+                                type: string
+                                example: '[a-zA-Z]+$'
+                              description:
+                                type: string
+                                example: Last name of the user
+                              maxLength:
+                                type: string
+                                example: '4'
+                      required:
+                        type: array
+                        items:
+                          type: string
+                        example:
+                          - firstName
+                  message:
+                    type: string
+                    example: Schema is retrieved
+        '400':
+          description: Schema details retrieval failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Invalid Schema
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized
+  /api/issuer/schemas:
+    get:
+      summary: Retrieve All Schemas of Issuer
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Issuer
+      responses:
+        '200':
+          description: Issuer's Schemas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      description: List of all schemas of Issuer
+                    example:
+                      - $schema: 'http://json-schema.org/draft-04/schema#'
+                        title: BAMembershipType
+                        description: Membership Document for BA Credential
+                        type: object
+                        properties:
+                          firstName:
+                            type: string
+                            pattern: '[a-zA-Z]+$'
+                            description: First name of the user
+                            maxLength: '0'
+                        required:
+                          - firstName
+                      - $schema: 'http://json-schema.org/draft-04/schema#'
+                        title: GBAembershipType
+                        description: Membership Document for GBA Credential
+                        type: object
+                        properties:
+                          firstName:
+                            type: string
+                            pattern: '[a-zA-Z]+$'
+                            description: First name of the user
+                            maxLength: '0'
+                          lastName:
+                            type: string
+                            pattern: '[a-zA-Z]+$'
+                            description: First name of the user
+                            maxLength: '0'
+                        required:
+                          - firstName
+                          - lastName
+                  message:
+                    type: string
+                    example: Schemas is retrieved
+        '400':
+          description: Schema retrieval failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Invalid Schemas
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized
+  /api/issuer/verifiableCredential:
+    post:
+      summary: Create a Verifiable Credential (Membership Document).
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Issuer
+      parameters:
+        - in: header
+          name: did
+          required: true
+          schema:
+            type: string
+            example: 0ff0dc1ad7e1ce727d8db8f07c30d43adefda5df7d54738c0aa0322af93df889
+          description: User Did
+        - in: header
+          name: publicKey
+          required: true
+          schema:
+            type: string
+            example: eyJrdHkiOiJPS1AiLCJjcnYiOiJFZDI1NTE5IiwieCI6IlJDd1JzZzI5d1M1YUVUempoREJlRm4yVUZkcUZ6QjdGWnhlWTA2V29sTmsiLCJkIjoibmxfV0dKVnV0TFFTaHVLcjdMYXBkd3Izelk2MWw1WXVfM0t4LWNEckZNMCJ9
+          description: User Public Key
+        - in: header
+          name: signature
+          required: true
+          schema:
+            type: string
+            example: eyJhbGciOiJFZERTQSJ9.eyJlbmNvZGVkVkMiOiJleUp6WTJobGJXRk9ZVzFsSWpvaVIwSkJUV1Z0WW1WeWMyaHBjRlI1Y0dVaUxDSnBjMFZ1WTNKNWNIUmxaQ0k2Wm1Gc2MyVXNJbVJsY0dWdVpHRnVkRlpsY21sbWFXRmliR1ZEY21Wa1pXNTBhV0ZzSWpwYlhTd2lZM0psWkdWdWRHbGhiRk4xWW1wbFkzUWlPbnNpZFhObGNrNWhiV1VpT2lKcWIyaHVSRzlsSWl3aVptbHljM1JPWVcxbElqb2lTbTlvYmlJc0lteGhjM1JPWVcxbElqb2lSRzlsSWl3aVpXMWhhV3dpT2lKcWIyaHVMbVJ2WlVCNGVYb3VZMjl0SWl3aWJXVnRZbVZ5YzJocGNGUjVjR1VpT2lKR2RXeHNJbjE5IiwiaWF0IjoxNjE0MjM4Njg2LCJhdWQiOiJkaWQ6ZWFydGhpZDp0ZXN0bmV0OnBCWXREdzlKdm4zUW96NnRra2RXczZOZVE5RFRXcW5NVXRvcWU5RDZUWmo7ZWFydGhpZDp0ZXN0bmV0OmZpZD0wLjAuMzc1MTY3IiwiZXhwIjoxNjE0MjM5Njg2fQ.Snq8WhkO1imSc3kftm_aER7r8qUhHS1igmi6DaLawL37s9vYFhMW6U_7uz-R5BtIJVuySIW5PTqnSwa0rWUNDQ
+          description: User Signature
+        - in: query
+          name: isCryptograph
+          required: false
+          schema:
+            type: boolean
+            example: false
+          description: VC as cryptograph
+        - in: query
+          name: downloadCryptograph
+          required: false
+          schema:
+            type: boolean
+            example: false
+          description: Retrieve VC's cryptograph as File
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                schemaName:
+                  type: string
+                  example: MembershipType
+                  description: Name/Type of Credential
+                isEncrypted:
+                  type: boolean
+                  description: VC is encrypted or not
+                dependantVerifiableCredential:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      '@context':
+                        type: array
+                        items:
+                          type: string
+                          description: Context
+                          example: 'https://www.w3.org/2018/credentials/v1'
+                      id:
+                        type: string
+                        description: Id of credential
+                        example: 'MembershipType:be45c748-6e8c-4771-93a8-7529b033d0f3'
+                      type:
+                        type: string
+                        description: Type
+                        example:
+                          - VerifiableCredential
+                          - MembershipType
+                      credentialSchema:
+                        type: object
+                        description: Credential Schema
+                        properties:
+                          id:
+                            type: string
+                            example: 'http://localhost:5050/gbaCertificate-schema.json'
+                          type:
+                            type: string
+                            example: JsonSchemaValidator2018
+                      issuer:
+                        type: string
+                        description: DID of Issuer
+                        example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                      credentialSubject:
+                        type: object
+                        description: ' Degree awarded to student'
+                        properties:
+                          id:
+                            type: string
+                            example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                            description: DID of user
+                          firstName:
+                            type: string
+                            example: John
+                            description: First Name of User
+                          lastName:
+                            type: string
+                            example: Doe
+                            description: Last Name of User
+                          email:
+                            type: string
+                            example: john@xyz.uk
+                            description: Email of User
+                          memebershipType:
+                            type: string
+                            example: full
+                            description: Membership Type of User
+                      issuanceDate:
+                        type: string
+                        format: date
+                        description: Date of Issuance of Credential
+                      expirationDate:
+                        type: string
+                        format: date
+                        description: Date of Expiry of Credential
+                      proof:
+                        type: object
+                        description: ' Degree awarded to student'
+                        properties:
+                          type:
+                            type: string
+                            example: Ed25519Signature2018
+                          creator:
+                            type: string
+                            example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                          created:
+                            type: string
+                            format: date
+                          proofPurpose:
+                            type: string
+                            example: assertionMethod
+                          vcVerificationMethod:
+                            type: string
+                            example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957#did-root-key'
+                          jws:
+                            type: string
+                            example: eyJjcml0IjpbImI2NCJdLCJiNjQiOmZhbHNlLCJhbGciOiJFZERTQSJ9..NywxMjcsMjUyLDExNywxMTgsMjE3LDQ5LDI0NSw1MCwxMDQsMjAxLDEzNyw2OSw4Miw1NywyNDYsMyw1OCwyMDUsNTEsODYsMjQ1LDIxMSwxMzEsNDQsNzMsMTExLDEwOCwxNDksMjQxLDIyOSwxMjUsMTI5LDIxMyw5NCw4NSwxNjksNzcsNiwxNjMsMTA4LDEzMiw4NiwxMjcsMjQxLDIzOSwxMjQsNDQsMjA2LDIyNywxMzksODIsNDQsMTc1LDI0LDE1OSwyMzksMjU0LDE1Miw3NCwxNzEsMTYzLDExNiw4
+                      credentialStatus:
+                        type: string
+                        example: ''
+                credentialSubject:
+                  type: object
+                  properties:
+                    userName:
+                      type: string
+                      example: johnDoe
+                      description: Username of User
+                    firstName:
+                      type: string
+                      example: John
+                      description: First Name of User
+                    lastName:
+                      type: string
+                      example: Doe
+                      description: Last Name of User
+                    email:
+                      type: string
+                      example: john.doe@xyz.com
+                      description: Email id of User
+                    membershipType:
+                      type: string
+                      example: Full
+                      description: Type of Membership
+                zkpEnableCredentialSubjects:
+                  type: array
+                  items:
+                    type: string
+                    example: age
+                biometric:
+                  type: object
+                  properties:
+                    face:
+                      type: object
+                      properties:
+                        probeFace:
+                          type: object
+                          example: '{ "pos": "F", "template": "+s7srwMAAAAjIwk4lxRP7ndqA+xGm8lCAAAAaQB+9JpSlzmsCZdqQzHTf01X/Wh+tJnNaAqPD2cKqLBBh4IKYKi8P6fwZJhDMCeAt1gLeH5NYtlqA3T3n+KhvUKBfxmbX0HOpQ6Wb7I8Jn9JqP90e09wNpTyhPtg8FO8tHqB8Z5dp8ag85mWsjgjgUBTAH+KsJjDlPBz8pQBUkBOjIQKZayyPakAmGu6wtuGSlP0g3dCmjZs8XHynPFUT7N+efaQVr7AUPVpYUg4Jn2+qwyGf7BkzGsNdPdjDKxGT4CC92SjvMCoCZWSvzjYfrFR8oF5T2XMlw2MCmMNpbhKhYDwmFW7x1TxkpRBOiOHtVD2fH+yZMxtDor1nfBTRrZ9ffaaVLXCVAuSbrjH2INLrfKAfbGYyGoKcfBh9VO4SoR99ZhVSMNUCJBtujkngbVS94CCsGXKkfBw8GEIrUZKgIMLmam3wqr2b5FBO9t8SFL1gHxPZ8uU9Izxn/RRuEqAgvCYqrfBqQmRkkQ72oG3rvWBfk5kypAJjPKd9Ky6Sn8=", "templateCreationResult": true }'
+                          description: Selfie Photo Template of User
+                        galleryFace:
+                          type: object
+                          example: '{ "pos": "F", "template": "+s7srwMAAAAjIwk4lxRP7ndqA+xGm8lCAAAAaQB+9JpSlzmsCZdqQzHTf01X/Wh+tJnNaAqPD2cKqLBBh4IKYKi8P6fwZJhDMCeAt1gLeH5NYtlqA3T3n+KhvUKBfxmbX0HOpQ6Wb7I8Jn9JqP90e09wNpTyhPtg8FO8tHqB8Z5dp8ag85mWsjgjgUBTAH+KsJjDlPBz8pQBUkBOjIQKZayyPakAmGu6wtuGSlP0g3dCmjZs8XHynPFUT7N+efaQVr7AUPVpYUg4Jn2+qwyGf7BkzGsNdPdjDKxGT4CC92SjvMCoCZWSvzjYfrFR8oF5T2XMlw2MCmMNpbhKhYDwmFW7x1TxkpRBOiOHtVD2fH+yZMxtDor1nfBTRrZ9ffaaVLXCVAuSbrjH2INLrfKAfbGYyGoKcfBh9VO4SoR99ZhVSMNUCJBtujkngbVS94CCsGXKkfBw8GEIrUZKgIMLmam3wqr2b5FBO9t8SFL1gHxPZ8uU9Izxn/RRuEqAgvCYqrfBqQmRkkQ72oG3rvWBfk5kypAJjPKd9Ky6Sn8=", "templateCreationResult": true }'
+                          description: Original Photo Template of User
+                    iris:
+                      type: object
+                      properties:
+                        probeIris:
+                          type: object
+                          example: '{ "pos": "F", "template": "+s7srwMAAAAjIwk4lxRP7ndqA+xGm8lCAAAAaQB+9JpSlzmsCZdqQzHTf01X/Wh+tJnNaAqPD2cKqLBBh4IKYKi8P6fwZJhDMCeAt1gLeH5NYtlqA3T3n+KhvUKBfxmbX0HOpQ6Wb7I8Jn9JqP90e09wNpTyhPtg8FO8tHqB8Z5dp8ag85mWsjgjgUBTAH+KsJjDlPBz8pQBUkBOjIQKZayyPakAmGu6wtuGSlP0g3dCmjZs8XHynPFUT7N+efaQVr7AUPVpYUg4Jn2+qwyGf7BkzGsNdPdjDKxGT4CC92SjvMCoCZWSvzjYfrFR8oF5T2XMlw2MCmMNpbhKhYDwmFW7x1TxkpRBOiOHtVD2fH+yZMxtDor1nfBTRrZ9ffaaVLXCVAuSbrjH2INLrfKAfbGYyGoKcfBh9VO4SoR99ZhVSMNUCJBtujkngbVS94CCsGXKkfBw8GEIrUZKgIMLmam3wqr2b5FBO9t8SFL1gHxPZ8uU9Izxn/RRuEqAgvCYqrfBqQmRkkQ72oG3rvWBfk5kypAJjPKd9Ky6Sn8=", "templateCreationResult": true }'
+                          description: Selfie Iris Photo Template of User
+                        galleryIris:
+                          type: object
+                          example: '{ "pos": "F", "template": "+s7srwMAAAAjIwk4lxRP7ndqA+xGm8lCAAAAaQB+9JpSlzmsCZdqQzHTf01X/Wh+tJnNaAqPD2cKqLBBh4IKYKi8P6fwZJhDMCeAt1gLeH5NYtlqA3T3n+KhvUKBfxmbX0HOpQ6Wb7I8Jn9JqP90e09wNpTyhPtg8FO8tHqB8Z5dp8ag85mWsjgjgUBTAH+KsJjDlPBz8pQBUkBOjIQKZayyPakAmGu6wtuGSlP0g3dCmjZs8XHynPFUT7N+efaQVr7AUPVpYUg4Jn2+qwyGf7BkzGsNdPdjDKxGT4CC92SjvMCoCZWSvzjYfrFR8oF5T2XMlw2MCmMNpbhKhYDwmFW7x1TxkpRBOiOHtVD2fH+yZMxtDor1nfBTRrZ9ffaaVLXCVAuSbrjH2INLrfKAfbGYyGoKcfBh9VO4SoR99ZhVSMNUCJBtujkngbVS94CCsGXKkfBw8GEIrUZKgIMLmam3wqr2b5FBO9t8SFL1gHxPZ8uU9Izxn/RRuEqAgvCYqrfBqQmRkkQ72oG3rvWBfk5kypAJjPKd9Ky6Sn8=", "templateCreationResult": true }'
+                          description: Original Iris Photo Template of User
+                    finger:
+                      type: object
+                      properties:
+                        probeFinger:
+                          type: object
+                          example: '{ "pos": "F", "template": "+s7srwMAAAAjIwk4lxRP7ndqA+xGm8lCAAAAaQB+9JpSlzmsCZdqQzHTf01X/Wh+tJnNaAqPD2cKqLBBh4IKYKi8P6fwZJhDMCeAt1gLeH5NYtlqA3T3n+KhvUKBfxmbX0HOpQ6Wb7I8Jn9JqP90e09wNpTyhPtg8FO8tHqB8Z5dp8ag85mWsjgjgUBTAH+KsJjDlPBz8pQBUkBOjIQKZayyPakAmGu6wtuGSlP0g3dCmjZs8XHynPFUT7N+efaQVr7AUPVpYUg4Jn2+qwyGf7BkzGsNdPdjDKxGT4CC92SjvMCoCZWSvzjYfrFR8oF5T2XMlw2MCmMNpbhKhYDwmFW7x1TxkpRBOiOHtVD2fH+yZMxtDor1nfBTRrZ9ffaaVLXCVAuSbrjH2INLrfKAfbGYyGoKcfBh9VO4SoR99ZhVSMNUCJBtujkngbVS94CCsGXKkfBw8GEIrUZKgIMLmam3wqr2b5FBO9t8SFL1gHxPZ8uU9Izxn/RRuEqAgvCYqrfBqQmRkkQ72oG3rvWBfk5kypAJjPKd9Ky6Sn8=", "templateCreationResult": true }'
+                          description: Selfie Finger Photo Template of User
+                        galleryFinger:
+                          type: object
+                          example: '{ "pos": "F", "template": "+s7srwMAAAAjIwk4lxRP7ndqA+xGm8lCAAAAaQB+9JpSlzmsCZdqQzHTf01X/Wh+tJnNaAqPD2cKqLBBh4IKYKi8P6fwZJhDMCeAt1gLeH5NYtlqA3T3n+KhvUKBfxmbX0HOpQ6Wb7I8Jn9JqP90e09wNpTyhPtg8FO8tHqB8Z5dp8ag85mWsjgjgUBTAH+KsJjDlPBz8pQBUkBOjIQKZayyPakAmGu6wtuGSlP0g3dCmjZs8XHynPFUT7N+efaQVr7AUPVpYUg4Jn2+qwyGf7BkzGsNdPdjDKxGT4CC92SjvMCoCZWSvzjYfrFR8oF5T2XMlw2MCmMNpbhKhYDwmFW7x1TxkpRBOiOHtVD2fH+yZMxtDor1nfBTRrZ9ffaaVLXCVAuSbrjH2INLrfKAfbGYyGoKcfBh9VO4SoR99ZhVSMNUCJBtujkngbVS94CCsGXKkfBw8GEIrUZKgIMLmam3wqr2b5FBO9t8SFL1gHxPZ8uU9Izxn/RRuEqAgvCYqrfBqQmRkkQ72oG3rvWBfk5kypAJjPKd9Ky6Sn8=", "templateCreationResult": true }'
+                          description: Original Finger Photo Template of User
+              required:
+                - schemaName
+                - isEncrypted
+                - credentialSubject
+      responses:
+        '201':
+          description: Verifiable Credential created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    description: Verifiable Credential of User
+                    properties:
+                      '@context':
+                        type: array
+                        items:
+                          type: string
+                          description: Context
+                          example: 'https://www.w3.org/2018/credentials/v1'
+                      id:
+                        type: string
+                        description: Id of credential
+                        example: 'MembershipType:be45c748-6e8c-4771-93a8-7529b033d0f3'
+                      type:
+                        type: string
+                        description: Type
+                        example:
+                          - VerifiableCredential
+                          - MembershipType
+                      credentialSchema:
+                        type: object
+                        description: Credential Schema
+                        properties:
+                          id:
+                            type: string
+                            example: 'http://localhost:5050/gbaCertificate-schema.json'
+                          type:
+                            type: string
+                            example: JsonSchemaValidator2018
+                      issuer:
+                        type: string
+                        description: DID of Issuer
+                        example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                      credentialSubject:
+                        type: object
+                        description: ' Degree awarded to student'
+                        properties:
+                          id:
+                            type: string
+                            example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                            description: DID of user
+                          firstName:
+                            type: string
+                            example: John
+                            description: First Name of User
+                          lastName:
+                            type: string
+                            example: Doe
+                            description: Last Name of User
+                          email:
+                            type: string
+                            example: john@xyz.uk
+                            description: Email of User
+                          memebershipType:
+                            type: string
+                            example: full
+                            description: Membership Type of User
+                      issuanceDate:
+                        type: string
+                        format: date
+                        description: Date of Issuance of Credential
+                      expirationDate:
+                        type: string
+                        format: date
+                        description: Date of Expiry of Credential
+                      proof:
+                        type: object
+                        description: ' Degree awarded to student'
+                        properties:
+                          type:
+                            type: string
+                            example: Ed25519Signature2018
+                          creator:
+                            type: string
+                            example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                          created:
+                            type: string
+                            format: date
+                          proofPurpose:
+                            type: string
+                            example: assertionMethod
+                          vcVerificationMethod:
+                            type: string
+                            example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957#did-root-key'
+                          jws:
+                            type: string
+                            example: eyJjcml0IjpbImI2NCJdLCJiNjQiOmZhbHNlLCJhbGciOiJFZERTQSJ9..NywxMjcsMjUyLDExNywxMTgsMjE3LDQ5LDI0NSw1MCwxMDQsMjAxLDEzNyw2OSw4Miw1NywyNDYsMyw1OCwyMDUsNTEsODYsMjQ1LDIxMSwxMzEsNDQsNzMsMTExLDEwOCwxNDksMjQxLDIyOSwxMjUsMTI5LDIxMyw5NCw4NSwxNjksNzcsNiwxNjMsMTA4LDEzMiw4NiwxMjcsMjQxLDIzOSwxMjQsNDQsMjA2LDIyNywxMzksODIsNDQsMTc1LDI0LDE1OSwyMzksMjU0LDE1Miw3NCwxNzEsMTYzLDExNiw4
+                      credentialStatus:
+                        type: string
+                        example: ''
+                  message:
+                    type: string
+                    example: The Verifiable Credential is created
+                  status:
+                    type: number
+                    example: 201
+        '400':
+          description: Verifiable Credential creation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Verifiable Credential creation failed!!
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized
+    delete:
+      summary: Delete Verifiable Credential
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Issuer
+      parameters:
+        - in: header
+          name: publicKey
+          required: true
+          schema:
+            type: string
+            example: eyJrdHkiOiJPS1AiLCJjcnYiOiJFZDI1NTE5IiwieCI6IlJDd1JzZzI5d1M1YUVUempoREJlRm4yVUZkcUZ6QjdGWnhlWTA2V29sTmsiLCJkIjoibmxfV0dKVnV0TFFTaHVLcjdMYXBkd3Izelk2MWw1WXVfM0t4LWNEckZNMCJ9
+          description: User Public Key
+        - in: header
+          name: signature
+          required: true
+          schema:
+            type: string
+            example: eyJhbGciOiJFZERTQSJ9.eyJlbmNvZGVkVkMiOiJleUp6WTJobGJXRk9ZVzFsSWpvaVIwSkJUV1Z0WW1WeWMyaHBjRlI1Y0dVaUxDSnBjMFZ1WTNKNWNIUmxaQ0k2Wm1Gc2MyVXNJbVJsY0dWdVpHRnVkRlpsY21sbWFXRmliR1ZEY21Wa1pXNTBhV0ZzSWpwYlhTd2lZM0psWkdWdWRHbGhiRk4xWW1wbFkzUWlPbnNpZFhObGNrNWhiV1VpT2lKcWIyaHVSRzlsSWl3aVptbHljM1JPWVcxbElqb2lTbTlvYmlJc0lteGhjM1JPWVcxbElqb2lSRzlsSWl3aVpXMWhhV3dpT2lKcWIyaHVMbVJ2WlVCNGVYb3VZMjl0SWl3aWJXVnRZbVZ5YzJocGNGUjVjR1VpT2lKR2RXeHNJbjE5IiwiaWF0IjoxNjE0MjM4Njg2LCJhdWQiOiJkaWQ6ZWFydGhpZDp0ZXN0bmV0OnBCWXREdzlKdm4zUW96NnRra2RXczZOZVE5RFRXcW5NVXRvcWU5RDZUWmo7ZWFydGhpZDp0ZXN0bmV0OmZpZD0wLjAuMzc1MTY3IiwiZXhwIjoxNjE0MjM5Njg2fQ.Snq8WhkO1imSc3kftm_aER7r8qUhHS1igmi6DaLawL37s9vYFhMW6U_7uz-R5BtIJVuySIW5PTqnSwa0rWUNDQ
+          description: User Signature
+        - in: query
+          name: vc
+          schema:
+            type: string
+          required: true
+      responses:
+        '202':
+          description: Issuer DID deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: boolean
+                  message:
+                    type: string
+                    example: vc u1rpKgx4j1WWECgrKpmSUyzx7m9 has been deleted
+        '400':
+          description: Issuer DID deletion failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Invalid vc
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized
+    put:
+      summary: Update/Reissue a Verifiable Credential (Membership Document).
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Issuer
+      parameters:
+        - in: header
+          name: publicKey
+          required: true
+          schema:
+            type: string
+            example: eyJrdHkiOiJPS1AiLCJjcnYiOiJFZDI1NTE5IiwieCI6IlJDd1JzZzI5d1M1YUVUempoREJlRm4yVUZkcUZ6QjdGWnhlWTA2V29sTmsiLCJkIjoibmxfV0dKVnV0TFFTaHVLcjdMYXBkd3Izelk2MWw1WXVfM0t4LWNEckZNMCJ9
+          description: User Public Key
+        - in: header
+          name: signature
+          required: true
+          schema:
+            type: string
+            example: eyJhbGciOiJFZERTQSJ9.eyJlbmNvZGVkVkMiOiJleUp6WTJobGJXRk9ZVzFsSWpvaVIwSkJUV1Z0WW1WeWMyaHBjRlI1Y0dVaUxDSnBjMFZ1WTNKNWNIUmxaQ0k2Wm1Gc2MyVXNJbVJsY0dWdVpHRnVkRlpsY21sbWFXRmliR1ZEY21Wa1pXNTBhV0ZzSWpwYlhTd2lZM0psWkdWdWRHbGhiRk4xWW1wbFkzUWlPbnNpZFhObGNrNWhiV1VpT2lKcWIyaHVSRzlsSWl3aVptbHljM1JPWVcxbElqb2lTbTlvYmlJc0lteGhjM1JPWVcxbElqb2lSRzlsSWl3aVpXMWhhV3dpT2lKcWIyaHVMbVJ2WlVCNGVYb3VZMjl0SWl3aWJXVnRZbVZ5YzJocGNGUjVjR1VpT2lKR2RXeHNJbjE5IiwiaWF0IjoxNjE0MjM4Njg2LCJhdWQiOiJkaWQ6ZWFydGhpZDp0ZXN0bmV0OnBCWXREdzlKdm4zUW96NnRra2RXczZOZVE5RFRXcW5NVXRvcWU5RDZUWmo7ZWFydGhpZDp0ZXN0bmV0OmZpZD0wLjAuMzc1MTY3IiwiZXhwIjoxNjE0MjM5Njg2fQ.Snq8WhkO1imSc3kftm_aER7r8qUhHS1igmi6DaLawL37s9vYFhMW6U_7uz-R5BtIJVuySIW5PTqnSwa0rWUNDQ
+          description: User Signature
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                credentialSubject:
+                  type: object
+                  example:
+                    userName: johnDoe
+                    firstName: John
+                    lastName: Doe
+                    email: john.doe@xyz.com
+                    membershipType: Full
+                  description: Credentias
+                vc:
+                  type: object
+                  properties:
+                    '@context':
+                      type: array
+                      items:
+                        type: string
+                        description: Context
+                        example: 'https://www.w3.org/2018/credentials/v1'
+                    id:
+                      type: string
+                      description: Id of credential
+                      example: 'MembershipType:be45c748-6e8c-4771-93a8-7529b033d0f3'
+                    type:
+                      type: string
+                      description: Type
+                      example:
+                        - VerifiableCredential
+                        - MembershipType
+                    credentialSchema:
+                      type: object
+                      description: Credential Schema
+                      properties:
+                        id:
+                          type: string
+                          example: 'http://localhost:5050/gbaCertificate-schema.json'
+                        type:
+                          type: string
+                          example: JsonSchemaValidator2018
+                    issuer:
+                      type: string
+                      description: DID of Issuer
+                      example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                    credentialSubject:
+                      type: object
+                      description: ' Degree awarded to student'
+                      properties:
+                        id:
+                          type: string
+                          example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                          description: DID of user
+                        firstName:
+                          type: string
+                          example: John
+                          description: First Name of User
+                        lastName:
+                          type: string
+                          example: Doe
+                          description: Last Name of User
+                        email:
+                          type: string
+                          example: john@xyz.uk
+                          description: Email of User
+                        memebershipType:
+                          type: string
+                          example: full
+                          description: Membership Type of User
+                    issuanceDate:
+                      type: string
+                      format: date
+                      description: Date of Issuance of Credential
+                    expirationDate:
+                      type: string
+                      format: date
+                      description: Date of Expiry of Credential
+                    proof:
+                      type: object
+                      description: ' Degree awarded to student'
+                      properties:
+                        type:
+                          type: string
+                          example: Ed25519Signature2018
+                        creator:
+                          type: string
+                          example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                        created:
+                          type: string
+                          format: date
+                        proofPurpose:
+                          type: string
+                          example: assertionMethod
+                        vcVerificationMethod:
+                          type: string
+                          example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957#did-root-key'
+                        jws:
+                          type: string
+                          example: eyJjcml0IjpbImI2NCJdLCJiNjQiOmZhbHNlLCJhbGciOiJFZERTQSJ9..NywxMjcsMjUyLDExNywxMTgsMjE3LDQ5LDI0NSw1MCwxMDQsMjAxLDEzNyw2OSw4Miw1NywyNDYsMyw1OCwyMDUsNTEsODYsMjQ1LDIxMSwxMzEsNDQsNzMsMTExLDEwOCwxNDksMjQxLDIyOSwxMjUsMTI5LDIxMyw5NCw4NSwxNjksNzcsNiwxNjMsMTA4LDEzMiw4NiwxMjcsMjQxLDIzOSwxMjQsNDQsMjA2LDIyNywxMzksODIsNDQsMTc1LDI0LDE1OSwyMzksMjU0LDE1Miw3NCwxNzEsMTYzLDExNiw4
+                    credentialStatus:
+                      type: string
+                      example: ''
+                  description: vc to be updated
+              required:
+                - credentialSubject
+                - vc
+      responses:
+        '201':
+          description: Verifiable Credential created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    description: Verifiable Credential of User
+                    properties:
+                      '@context':
+                        type: array
+                        items:
+                          type: string
+                          description: Context
+                          example: 'https://www.w3.org/2018/credentials/v1'
+                      id:
+                        type: string
+                        description: Id of credential
+                        example: 'MembershipType:be45c748-6e8c-4771-93a8-7529b033d0f3'
+                      type:
+                        type: string
+                        description: Type
+                        example:
+                          - VerifiableCredential
+                          - MembershipType
+                      credentialSchema:
+                        type: object
+                        description: Credential Schema
+                        properties:
+                          id:
+                            type: string
+                            example: 'http://localhost:5050/gbaCertificate-schema.json'
+                          type:
+                            type: string
+                            example: JsonSchemaValidator2018
+                      issuer:
+                        type: string
+                        description: DID of Issuer
+                        example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                      credentialSubject:
+                        type: object
+                        description: ' Degree awarded to student'
+                        properties:
+                          id:
+                            type: string
+                            example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                            description: DID of user
+                          firstName:
+                            type: string
+                            example: John
+                            description: First Name of User
+                          lastName:
+                            type: string
+                            example: Doe
+                            description: Last Name of User
+                          email:
+                            type: string
+                            example: john@xyz.uk
+                            description: Email of User
+                          memebershipType:
+                            type: string
+                            example: full
+                            description: Membership Type of User
+                      issuanceDate:
+                        type: string
+                        format: date
+                        description: Date of Issuance of Credential
+                      expirationDate:
+                        type: string
+                        format: date
+                        description: Date of Expiry of Credential
+                      proof:
+                        type: object
+                        description: ' Degree awarded to student'
+                        properties:
+                          type:
+                            type: string
+                            example: Ed25519Signature2018
+                          creator:
+                            type: string
+                            example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                          created:
+                            type: string
+                            format: date
+                          proofPurpose:
+                            type: string
+                            example: assertionMethod
+                          vcVerificationMethod:
+                            type: string
+                            example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957#did-root-key'
+                          jws:
+                            type: string
+                            example: eyJjcml0IjpbImI2NCJdLCJiNjQiOmZhbHNlLCJhbGciOiJFZERTQSJ9..NywxMjcsMjUyLDExNywxMTgsMjE3LDQ5LDI0NSw1MCwxMDQsMjAxLDEzNyw2OSw4Miw1NywyNDYsMyw1OCwyMDUsNTEsODYsMjQ1LDIxMSwxMzEsNDQsNzMsMTExLDEwOCwxNDksMjQxLDIyOSwxMjUsMTI5LDIxMyw5NCw4NSwxNjksNzcsNiwxNjMsMTA4LDEzMiw4NiwxMjcsMjQxLDIzOSwxMjQsNDQsMjA2LDIyNywxMzksODIsNDQsMTc1LDI0LDE1OSwyMzksMjU0LDE1Miw3NCwxNzEsMTYzLDExNiw4
+                      credentialStatus:
+                        type: string
+                        example: ''
+                  message:
+                    type: string
+                    example: The Verifiable Credential is created
+                  status:
+                    type: number
+                    example: 201
+        '400':
+          description: Verifiable Credential creation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Verifiable Credential creation failed!!
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized
+  /api/verifier/createConditions:
+    post:
+      summary: Create Conditions for Verifier.
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Verifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                age:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      enum:
+                        - number
+                        - date
+                    maximum:
+                      type: string
+                    minimum:
+                      type: string
+              example:
+                salary:
+                  type: number
+                  maximum: '1000'
+                  minimum: '100'
+                dateOfBirth:
+                  type: date
+                  value: 30
+                  unit: years
+      responses:
+        '200':
+          description: Verifier's Condition
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: Condition is created
+                  data:
+                    type: string
+                    example: Conditions created and submited successfully
+        '400':
+          description: Condition creation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Conditions creation failed
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized
+  /api/verifier/conditions:
+    get:
+      summary: Retrieve All Conditions of Issuer
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Verifier
+      responses:
+        '200':
+          description: Verifier's Conditions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      description: List of all conditions of Verifier
+                    example:
+                      - salary:
+                          type: number
+                          maximum: '1000000'
+                          minimum: '10000'
+                        dateOfBirth:
+                          type: date
+                          value: 18
+                          unit: years
+                        conditionName: VERIFIER_Conditions
+                  message:
+                    type: string
+                    example: Conditions is retrieved
+        '400':
+          description: Conditions retrieval failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Invalid Conditions
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized
+  /api/verifier/verify:
+    post:
+      summary: Verify the Credentials
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - Verifier
+      parameters:
+        - in: header
+          name: publicKey
+          required: false
+          schema:
+            type: string
+            example: 0ff0dc1ad7e1ce727d8db8f07c30d43adefda5df7d54738c0aa0322af93df889
+          description: Public Key of User
+        - in: query
+          name: verifyParams
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            example:
+              - userName=johnDoe
+              - firstName=John
+              - lastName=Doe
+              - email=john.doe@xyz.com
+              - membershipType=Full
+          style: form
+          explode: false
+          description: Verification Contents
+        - in: query
+          name: zpkValidation
+          required: false
+          schema:
+            type: boolean
+          description: Enable ZKP Validation
+        - in: header
+          name: signature
+          required: false
+          schema:
+            type: string
+            example: 8fd44791c2d58acd8cfa408d261fe3c66de728e747d7f0e9640824655a5940cd9ac0d1b3e51dc4bdc6dcfc50c8e0220d2258355841ec691cdfe7b6c6f42a3a0d224d6a497a4c4445324e7977794d5467734d6a49314c4449794e79777a4d5377794d544d734d546b7a4c446b304c4445344d5377784e5445734f4455734d5445354c4445324e5377784e4459734d5467304c44497a4c44497a4e6977794c4445354e6977794d4449734d54637a4c4445774f5377324e4377784e6a59734d7a55734d6a41734d5445784c4445784c4459344c4445774e7977314d673d3d22
+          description: Signature of User to Verify
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                zkpPublicKey:
+                  type: string
+                  example: eyJuIjoiMzkxNDUwMzA4MDQ4MTU0MjkwNzUwOTk5NjkwMzk0NjczMjY3OTU1NDE3NDU3Njg2MjMyMTU1NzYwNDU3ODYxODA0ODUwMjA1NDAxOTA5MjQxOTc0Mjk2MzM3NDY4Mzc1MTMwNDM1Njg3NDc4NzcyOTQzODA0MzYyMjEzOTk0NjU4NTYxMTM0NDY2MjM5MDgzMDY5NTA3MzUzODUzNTYzODg1MDA1OTE3NDE0NjQxMjA3NzE2NzE3NDcwNDA1MTA5NTg4ODkzMTAxOTY3NTg2NTg2MjY2MDAxNjM5OTU0MzE4NDA5MjY3MjM3Mjc3MjQ1NzIwMDc5OTcyOTc1MDc5MzU4NTQ3NzY3MTMwODMzMzIxOTQ5NTg2MDI3Mzg0NzIzNjUwNTQ0MjgxOTQ0NDY2MTk3OTQ3MjMwMzc0MDc0MTU0Mjk2NzEyNTQ1ODY3NTY0NzYxNTI4OTA3MTQxMjI0Nzg5NDczMTIyNjI0NjE5MTYyMjgyNDgxMDcwOTIyNTM4OTc2MTU2Mzg2NzUxMjQzNjY2MTgwNjUzMjg1NDQ2MTk0MDA4NDgzMzQyNDM0MTEwMjk5OTQwMDcyMTU1OTY3OTExNDg2ODQ2NzA0NTEzNDUwMjgxNzg3OTY2NzYwNzkzODg1NDg3NjUwNDQ1NzIxMDMwNjg0MzM4NjQwNjkyODk3NTMwMDgwOTczOTM2ODI0MzA3MzI4NTkwNzk1OTQwNjM3NTUyNTM5Nzg5OTg3NjA5OTg0NTYyNTU5OTI1Nzg2MTA4NzAxNTUwMjc4OTk2OTU2NjExODg1NjU3OTQ1MDM5ODM3MzQ4MzI2MjU3Mjc1NDAyNzQwMjk5NjYzOTMyMzA1NjA4OTE1MzY2NDI5OTE2Nzg1ODYzMTQ0MzMzNjA1MTI4MDI1NDYwNjI1NTc1NzMyOTEyNTMxMzI3NzMzNjA5NTk0NjYzNDM3MDQwODE4NzU3NDM3NjYzODA4OTUzODk5MTExNjE4MzYwMjYwMDQ0NDI0MDYwNzUwMjAyMzI4NzE0OTYyMTY1NzAwMDgzNTMwMjUyMjc0MTMzMDk3MTkxMDQ4ODk1OTQxNjUzMTc4NDkxNDQ3NTg1MTA0OTA0OTQ0MTcyMzcwMDc3NzI0ODA4NjQ2OTM3NDA5ODg5NTIzNDEwMTk4MTg2Njc0NDgyNTI4NTYwODgxNTk2ODYyNjQ0NjI4MDYwNjU2MTE5MzE1NDYxODgwMzUxNDkwMSIsIl9uMiI6IjE1MzIzMzM0MzY3MDk5NDg4Nzg5NDMxOTU5NTk0MzUzMDc5ODkyNzM4MDU0NTEzMzM0NTk1MjA0ODIxOTM5MDQ0NTE5NDI5NTU2NTk1NTMwMDU4MDIzNTMxNTkzNjY4OTE0Nzc0NDk0ODQxODM2OTU1MzY1MDc3OTE5NTE3NjE1NjExMzYxMjIyODY2MDg5OTkzNjE2MDA0NjI5NzAxMzk3MTc4MzMxNTEwNzk0MTkzNzIxMzIxMDM4Mzk2NDY3ODk4NTk5MzcyODE2ODkyMTUzODkxMTY2NzE2NDQxOTEyNzQ5Njc2MTQwNjMwOTgyMTM2NTYzNDA4OTM2MDY2MDQ0OTA2Nzk4MDcyMjA0MjM4NzU2OTYyMzU1NTA5NTg2NjA0MTU4NjEzODA1OTE4NjE0OTY2MjE1OTkxMTU2NzkyNDI4MDM2MDYwNTAyMTIxMzE0ODAxNTA4ODI1MDIwMzU3Nzk4MzM1MTk2NzExMjU5Nzc0MjcwNDM0NzQwNDMyMzExODMxOTg2MTAwNzkyODgzODgwNzExNjEzMjgzMTMzNjY1ODI3NDkyMjM2NDE2MDY4MjY2MDA4NTI2MDk4MjE0NTU1MzQ5MDI5MTg1MjY3Nzk0NTIzODUwNTAxNTIzOTE3MzY5MDA5OTczNDY4NDMyMTI4NzA4NjQxMTMzMDY1NDU4NDMzNTIwMjM5MTU3MDg0MjY5MjY5NjAwMTQ0MjgwNTQ4MDUwMzA0NTQyMDEzMjU1ODg1NTg0ODYxMjgzODE5MTk0MTk4NjcxNzkwNDcwOTQwODA5MzYxODczMjIwNzY3MDQ2NzAzODMxMzUzMjA2ODg4MDc4MjI0NDM2NDQ4NDY0MTQ4OTQ3NzYwOTAxMjMzODE3NzIyNzkwODMzODU3Nzk5NTMwMzA2NTk4MjY0NDczMjMzNjEyNTQxNTM2NTQ1NDk4ODc4ODQ4MTAwNTUzNTA0MTE0OTI1MTE1MDgyNzgzODA0MDI4MDA2MzUyMzM5OTgzNzIxMTUxMzg4Nzg0MzM0MTIyMjcwOTg2MTM3MTgxMDMzOTE3OTkxOTU0MzEyNDk3OTg2NTM2Nzg2NzMxMDYzMTc1MzQ5MTUxMzk0NDMxNDQyNDgxMTA0MTEwODM1MjY5NTI5ODU5NjUyODQzNDczNTcxNDEwODA3NTk3NjM2MjM3ODI0MTIwMTA5MDkwMTU1MjYyOTY2ODM3OTM4NTQyNTM3NDMyMDQxNjgxMDM0MTAwNDgzNjAzMDMwNDc4NzI1OTcwMTQ5MjM0OTY4NzM3MzAxMzk4OTI5ODg0NDU4NTQzNjgyNTcwMDE4MDQwMTQwOTQ0NTU5MDAyOTc4ODQ1MzUzNzI0NTc0MzUyMjU0ODUyNDQyMTQ4MTk4NDUyMjY1Mzk0NjU2OTIyNDUzOTQzNDYzMzcwMTEwNDMwMTA5MTM0ODE5MTU2Njk3NTI5MDI2NTAxNDI0MjAzNjgzNjA5NTYwNTI0Mjg5MjQ5NTQ5OTczNjI5OTg3MDU4NTYwMTExNzc5NjYxNDg0ODU1OTI5MjIwNDE3OTM3NTU0MjI3NjgyMDYyNzA5MTc1MDA0MzA1NDU2NjIxOTU3OTg2NzYzNDk2Mjk4Mzg3MDQxNzgwNDM5OTk3MDk0MzY2MzE0NTgzMTA2MjA4ODIwNzA1MDI1NzYxMzY5MzU0MTI5NTY4NDk5NTczNzI2NjM5MjI5Mjg1ODM3MTAxNzY5NTQ5MzI2MDU1NjY3MTM0NjE4OTk2OTg0NDU4NDMyMDkxNTI3MjkzNDgxMTY0NTkwMTc3MjI3NzkwOTc4ODcxMzU4MDI3NjA4NjExNDYyNjMyMDI5NjA1OTM2MDQxMzIxNDQ3ODU0MDMxOTI2MTgxODg1MzczMzkwMDUyNzY1MDYxMzI3NDA2MzI3NzEwMjUxNDMwNjk5MDk4MjI2NTgyODM4MTI3OTQ1MDMzODA1Nzk2NDIyNjg3MzM5MzgwNzE0NjIyMDE3MTc2Njk3NDQ0MzU4OTIzODY1NDIzODM3OTEzMTQ4NTgyODcxOTk0MTQzMjE4OTMzNTU2MjcyMDQ1Njk5NTAzOTk0NjExNDMxMzY4OTIyMDQ5NDY1MTEyMTE5NDY0NzI1MzIwNTM5MzAxMjg2OTAyMjQxMDA2NjcyNDY2NjI5MzQ5ODUxNDM2MDM3MjUxNTM4MDE0MjUyNDU0MTk4MjAwMDAwMTA0ODAzODU1MTk5ODkxNDEwOTM5OTUwODQ3NjM3MTcyMjczMDM3NDkwNDczMzcxNzM3NTg4NjI1MDAzODY3OTQ4NDMxNjEyOTA5NDI0NzI5NDU4MTE4MjM4Mzk3NzQ4NTg2OTMzOTUzMzcyMjg1NDU2ODg5NTc1MDY5NDUxMDY2OTM2MDAxMjI2NzY4MzQ1MTI1NjY1NDgzODE5MDc5NDEyMDkyOTAwOTI4ODYyMDc0MTY1NTYxODMyMTI5MDM5ODAxIiwiZyI6IjM5MTQ1MDMwODA0ODE1NDI5MDc1MDk5OTY5MDM5NDY3MzI2Nzk1NTQxNzQ1NzY4NjIzMjE1NTc2MDQ1Nzg2MTgwNDg1MDIwNTQwMTkwOTI0MTk3NDI5NjMzNzQ2ODM3NTEzMDQzNTY4NzQ3ODc3Mjk0MzgwNDM2MjIxMzk5NDY1ODU2MTEzNDQ2NjIzOTA4MzA2OTUwNzM1Mzg1MzU2Mzg4NTAwNTkxNzQxNDY0MTIwNzcxNjcxNzQ3MDQwNTEwOTU4ODg5MzEwMTk2NzU4NjU4NjI2NjAwMTYzOTk1NDMxODQwOTI2NzIzNzI3NzI0NTcyMDA3OTk3Mjk3NTA3OTM1ODU0Nzc2NzEzMDgzMzMyMTk0OTU4NjAyNzM4NDcyMzY1MDU0NDI4MTk0NDQ2NjE5Nzk0NzIzMDM3NDA3NDE1NDI5NjcxMjU0NTg2NzU2NDc2MTUyODkwNzE0MTIyNDc4OTQ3MzEyMjYyNDYxOTE2MjI4MjQ4MTA3MDkyMjUzODk3NjE1NjM4Njc1MTI0MzY2NjE4MDY1MzI4NTQ0NjE5NDAwODQ4MzM0MjQzNDExMDI5OTk0MDA3MjE1NTk2NzkxMTQ4Njg0NjcwNDUxMzQ1MDI4MTc4Nzk2Njc2MDc5Mzg4NTQ4NzY1MDQ0NTcyMTAzMDY4NDMzODY0MDY5Mjg5NzUzMDA4MDk3MzkzNjgyNDMwNzMyODU5MDc5NTk0MDYzNzU1MjUzOTc4OTk4NzYwOTk4NDU2MjU1OTkyNTc4NjEwODcwMTU1MDI3ODk5Njk1NjYxMTg4NTY1Nzk0NTAzOTgzNzM0ODMyNjI1NzI3NTQwMjc0MDI5OTY2MzkzMjMwNTYwODkxNTM2NjQyOTkxNjc4NTg2MzE0NDMzMzYwNTEyODAyNTQ2MDYyNTU3NTczMjkxMjUzMTMyNzczMzYwOTU5NDY2MzQzNzA0MDgxODc1NzQzNzY2MzgwODk1Mzg5OTExMTYxODM2MDI2MDA0NDQyNDA2MDc1MDIwMjMyODcxNDk2MjE2NTcwMDA4MzUzMDI1MjI3NDEzMzA5NzE5MTA0ODg5NTk0MTY1MzE3ODQ5MTQ0NzU4NTEwNDkwNDk0NDE3MjM3MDA3NzcyNDgwODY0NjkzNzQwOTg4OTUyMzQxMDE5ODE4NjY3NDQ4MjUyODU2MDg4MTU5Njg2MjY0NDYyODA2MDY1NjExOTMxNTQ2MTg4MDM1MTQ5MDIifQ==
+                credentials:
+                  type: object
+                  properties:
+                    '@context':
+                      type: array
+                      items:
+                        type: string
+                        description: Context
+                        example: 'https://www.w3.org/2018/credentials/v1'
+                    id:
+                      type: string
+                      description: Id of credential
+                      example: 'MembershipType:be45c748-6e8c-4771-93a8-7529b033d0f3'
+                    type:
+                      type: string
+                      description: Type
+                      example:
+                        - VerifiableCredential
+                        - MembershipType
+                    credentialSchema:
+                      type: object
+                      description: Credential Schema
+                      properties:
+                        id:
+                          type: string
+                          example: 'http://localhost:5050/gbaCertificate-schema.json'
+                        type:
+                          type: string
+                          example: JsonSchemaValidator2018
+                    issuer:
+                      type: string
+                      description: DID of Issuer
+                      example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                    credentialSubject:
+                      type: object
+                      description: ' Degree awarded to student'
+                      properties:
+                        id:
+                          type: string
+                          example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                          description: DID of user
+                        firstName:
+                          type: string
+                          example: John
+                          description: First Name of User
+                        lastName:
+                          type: string
+                          example: Doe
+                          description: Last Name of User
+                        email:
+                          type: string
+                          example: john@xyz.uk
+                          description: Email of User
+                        memebershipType:
+                          type: string
+                          example: full
+                          description: Membership Type of User
+                    issuanceDate:
+                      type: string
+                      format: date
+                      description: Date of Issuance of Credential
+                    expirationDate:
+                      type: string
+                      format: date
+                      description: Date of Expiry of Credential
+                    proof:
+                      type: object
+                      description: ' Degree awarded to student'
+                      properties:
+                        type:
+                          type: string
+                          example: Ed25519Signature2018
+                        creator:
+                          type: string
+                          example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                        created:
+                          type: string
+                          format: date
+                        proofPurpose:
+                          type: string
+                          example: assertionMethod
+                        vcVerificationMethod:
+                          type: string
+                          example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957#did-root-key'
+                        jws:
+                          type: string
+                          example: eyJjcml0IjpbImI2NCJdLCJiNjQiOmZhbHNlLCJhbGciOiJFZERTQSJ9..NywxMjcsMjUyLDExNywxMTgsMjE3LDQ5LDI0NSw1MCwxMDQsMjAxLDEzNyw2OSw4Miw1NywyNDYsMyw1OCwyMDUsNTEsODYsMjQ1LDIxMSwxMzEsNDQsNzMsMTExLDEwOCwxNDksMjQxLDIyOSwxMjUsMTI5LDIxMyw5NCw4NSwxNjksNzcsNiwxNjMsMTA4LDEzMiw4NiwxMjcsMjQxLDIzOSwxMjQsNDQsMjA2LDIyNywxMzksODIsNDQsMTc1LDI0LDE1OSwyMzksMjU0LDE1Miw3NCwxNzEsMTYzLDExNiw4
+                    credentialStatus:
+                      type: string
+                      example: ''
+                biometrics:
+                  type: object
+                  properties:
+                    face:
+                      type: object
+                      example: '{ "pos": "F", "template": "+s7srwMAAAAjIwk4lxRP7ndqA+xGm8lCAAAAaQB+9JpSlzmsCZdqQzHTf01X/Wh+tJnNaAqPD2cKqLBBh4IKYKi8P6fwZJhDMCeAt1gLeH5NYtlqA3T3n+KhvUKBfxmbX0HOpQ6Wb7I8Jn9JqP90e09wNpTyhPtg8FO8tHqB8Z5dp8ag85mWsjgjgUBTAH+KsJjDlPBz8pQBUkBOjIQKZayyPakAmGu6wtuGSlP0g3dCmjZs8XHynPFUT7N+efaQVr7AUPVpYUg4Jn2+qwyGf7BkzGsNdPdjDKxGT4CC92SjvMCoCZWSvzjYfrFR8oF5T2XMlw2MCmMNpbhKhYDwmFW7x1TxkpRBOiOHtVD2fH+yZMxtDor1nfBTRrZ9ffaaVLXCVAuSbrjH2INLrfKAfbGYyGoKcfBh9VO4SoR99ZhVSMNUCJBtujkngbVS94CCsGXKkfBw8GEIrUZKgIMLmam3wqr2b5FBO9t8SFL1gHxPZ8uU9Izxn/RRuEqAgvCYqrfBqQmRkkQ72oG3rvWBfk5kypAJjPKd9Ky6Sn8=", "templateCreationResult": true }'
+                      description: Selfie Photo Template of User
+                    iris:
+                      type: object
+                      example: '{ "pos": "F", "template": "+s7srwMAAAAjIwk4lxRP7ndqA+xGm8lCAAAAaQB+9JpSlzmsCZdqQzHTf01X/Wh+tJnNaAqPD2cKqLBBh4IKYKi8P6fwZJhDMCeAt1gLeH5NYtlqA3T3n+KhvUKBfxmbX0HOpQ6Wb7I8Jn9JqP90e09wNpTyhPtg8FO8tHqB8Z5dp8ag85mWsjgjgUBTAH+KsJjDlPBz8pQBUkBOjIQKZayyPakAmGu6wtuGSlP0g3dCmjZs8XHynPFUT7N+efaQVr7AUPVpYUg4Jn2+qwyGf7BkzGsNdPdjDKxGT4CC92SjvMCoCZWSvzjYfrFR8oF5T2XMlw2MCmMNpbhKhYDwmFW7x1TxkpRBOiOHtVD2fH+yZMxtDor1nfBTRrZ9ffaaVLXCVAuSbrjH2INLrfKAfbGYyGoKcfBh9VO4SoR99ZhVSMNUCJBtujkngbVS94CCsGXKkfBw8GEIrUZKgIMLmam3wqr2b5FBO9t8SFL1gHxPZ8uU9Izxn/RRuEqAgvCYqrfBqQmRkkQ72oG3rvWBfk5kypAJjPKd9Ky6Sn8=", "templateCreationResult": true }'
+                      description: Selfie Iris Photo Template of User
+                    finger:
+                      type: object
+                      example: '{ "pos": "F", "template": "+s7srwMAAAAjIwk4lxRP7ndqA+xGm8lCAAAAaQB+9JpSlzmsCZdqQzHTf01X/Wh+tJnNaAqPD2cKqLBBh4IKYKi8P6fwZJhDMCeAt1gLeH5NYtlqA3T3n+KhvUKBfxmbX0HOpQ6Wb7I8Jn9JqP90e09wNpTyhPtg8FO8tHqB8Z5dp8ag85mWsjgjgUBTAH+KsJjDlPBz8pQBUkBOjIQKZayyPakAmGu6wtuGSlP0g3dCmjZs8XHynPFUT7N+efaQVr7AUPVpYUg4Jn2+qwyGf7BkzGsNdPdjDKxGT4CC92SjvMCoCZWSvzjYfrFR8oF5T2XMlw2MCmMNpbhKhYDwmFW7x1TxkpRBOiOHtVD2fH+yZMxtDor1nfBTRrZ9ffaaVLXCVAuSbrjH2INLrfKAfbGYyGoKcfBh9VO4SoR99ZhVSMNUCJBtujkngbVS94CCsGXKkfBw8GEIrUZKgIMLmam3wqr2b5FBO9t8SFL1gHxPZ8uU9Izxn/RRuEqAgvCYqrfBqQmRkkQ72oG3rvWBfk5kypAJjPKd9Ky6Sn8=", "templateCreationResult": true }'
+                      description: Selfie Finger Photo Template of User
+      responses:
+        '200':
+          description: Credential Verified
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      isVCValid:
+                        type: string
+                        example: Success
+                      isDIDValid:
+                        type: string
+                        example: Success
+                  message:
+                    type: string
+                    example: 'The issuer Did is Verified and Found to be valid, and the Credential is Verified and found to be valid'
+                  status:
+                    type: number
+                    example: 201
+        '400':
+          description: Credential verification failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Invalid VC
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized
+  /api/user/generateKeyPair:
+    get:
+      summary: Create User Keys
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - User
+      responses:
+        '200':
+          description: User's Keys
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: Keys is generated
+                  data:
+                    type: object
+                    properties:
+                      publicKey:
+                        type: string
+                      privateKey:
+                        type: string
+        '400':
+          description: Key generation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Key generation failed
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized
+  /api/user/did:
+    get:
+      summary: Create User DID
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - User
+      parameters:
+        - in: header
+          name: publicKey
+          required: true
+          schema:
+            type: string
+          description: Public Key of User
+      responses:
+        '200':
+          description: Issuer's DID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: DID is retrieved
+                  data:
+                    type: string
+                    example: 'did:earthid:testnet:AabfxxZm8PYRWGDsa5DtVwJsnCAxBpyoQLzxFcT9y1sE;earthid:testnet:fid=0.0.216007'
+        '400':
+          description: DID retrieval failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Invalid DID
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized
+  /api/user/sign:
+    post:
+      summary: User signing
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - User
+      parameters:
+        - in: header
+          name: privateKey
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: verifierDid
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+            example:
+              - 'did:earthid:testnet:AabfxxZm8PYRWGDsa5DtVwJsnCAxBpyoQLzxFcT9y1sE;earthid:testnet:fid=0.0.216007'
+          style: form
+          explode: false
+          description: Verification Contents
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payload:
+                  type: object
+                  properties:
+                    '@context':
+                      type: array
+                      items:
+                        type: string
+                        description: Context
+                        example: 'https://www.w3.org/2018/credentials/v1'
+                    id:
+                      type: string
+                      description: Id of credential
+                      example: 'MembershipType:be45c748-6e8c-4771-93a8-7529b033d0f3'
+                    type:
+                      type: string
+                      description: Type
+                      example:
+                        - VerifiableCredential
+                        - MembershipType
+                    credentialSchema:
+                      type: object
+                      description: Credential Schema
+                      properties:
+                        id:
+                          type: string
+                          example: 'http://localhost:5050/gbaCertificate-schema.json'
+                        type:
+                          type: string
+                          example: JsonSchemaValidator2018
+                    issuer:
+                      type: string
+                      description: DID of Issuer
+                      example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                    credentialSubject:
+                      type: object
+                      description: ' Degree awarded to student'
+                      properties:
+                        id:
+                          type: string
+                          example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                          description: DID of user
+                        firstName:
+                          type: string
+                          example: John
+                          description: First Name of User
+                        lastName:
+                          type: string
+                          example: Doe
+                          description: Last Name of User
+                        email:
+                          type: string
+                          example: john@xyz.uk
+                          description: Email of User
+                        memebershipType:
+                          type: string
+                          example: full
+                          description: Membership Type of User
+                    issuanceDate:
+                      type: string
+                      format: date
+                      description: Date of Issuance of Credential
+                    expirationDate:
+                      type: string
+                      format: date
+                      description: Date of Expiry of Credential
+                    proof:
+                      type: object
+                      description: ' Degree awarded to student'
+                      properties:
+                        type:
+                          type: string
+                          example: Ed25519Signature2018
+                        creator:
+                          type: string
+                          example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957'
+                        created:
+                          type: string
+                          format: date
+                        proofPurpose:
+                          type: string
+                          example: assertionMethod
+                        vcVerificationMethod:
+                          type: string
+                          example: 'did:earthid:testnet:6J1QfN6DWdBQG7qHVNG3PikbjeuSEXZ6sc2UjLiMyBnM;earthid:testnet:fid=0.0.209957#did-root-key'
+                        jws:
+                          type: string
+                          example: eyJjcml0IjpbImI2NCJdLCJiNjQiOmZhbHNlLCJhbGciOiJFZERTQSJ9..NywxMjcsMjUyLDExNywxMTgsMjE3LDQ5LDI0NSw1MCwxMDQsMjAxLDEzNyw2OSw4Miw1NywyNDYsMyw1OCwyMDUsNTEsODYsMjQ1LDIxMSwxMzEsNDQsNzMsMTExLDEwOCwxNDksMjQxLDIyOSwxMjUsMTI5LDIxMyw5NCw4NSwxNjksNzcsNiwxNjMsMTA4LDEzMiw4NiwxMjcsMjQxLDIzOSwxMjQsNDQsMjA2LDIyNywxMzksODIsNDQsMTc1LDI0LDE1OSwyMzksMjU0LDE1Miw3NCwxNzEsMTYzLDExNiw4
+                    credentialStatus:
+                      type: string
+                      example: ''
+      responses:
+        '200':
+          description: Token created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: string
+                    example: a62636d145f1f569e35c1e0ceecc60e3d209591738d439ca630c21f5212802002c3692f5da7cd85d189f62e3b857f0d03b245a433fb4d4ab47f6891989c7020b7b227061796c6f6164223a2265794a7a5932686c6257464f5957316c496a6f6952304a4254575674596d56796332687063465235634755694c434a706330567559334a356348526c5a43493664484a315a5377695a4756775a57356b59573530566d567961575a7059574a735a554e795a57526c626e5270595777694f6c74644c434a6a636d566b5a5735306157467355335669616d566a6443493665794a3163325679546d46745a534936496d707661473545623255694c434a6d61584a7a64453568625755694f694a4b62326875496977696247467a64453568625755694f694a45623255694c434a6c6257467062434936496d7076614734755a47396c514868356569356a623230694c434a745a5731695a584a7a61476c7756486c775a534936496b5a31624777696658303d222c2261756469656e6365223a226469643a656172746869643a746573746e65743a367a5333764c6f4e63434b7539534b514d3843734a71524a55346e6a6f42333145346f5a566e5742593674633b656172746869643a746573746e65743a6669643d302e302e333937313137222c2274696d655374616d70223a313631343834343933303139392c22657870223a313631343834353033303139397d
+                  message:
+                    type: string
+                    example: Token is created
+        '400':
+          description: Token creation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Invalid Private Key
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized
+  /api/user/image/createTemplate:
+    post:
+      summary: Create User Image Templates
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                originalPhoto:
+                  type: string
+                  format: binary
+                selfiePhoto:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Templates created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      probeFace:
+                        type: object
+                        example: '{ "pos": "F", "template": "+s7srwMAAAC8+U1J4Pam5bvetlUfjZ8fAAAAaQCDC2dVuMOv9ZpgVs3del+sG4h9t2XDlvaN9WDwS0ZPenvwnFFKMUwMa21AxNCKS1oIcWmwZ8tqAHH6aQpSu7t5efSfuk0sV/SYnUQ73n5KXvN0crpjNpPxjvFhBKNLSHaM/5pWvz5cC2tnvjzYikKv/HB0spE/khh28pn2Vka2fHj1m1Szyq/yb2y8wtt5tVn0dYNMmzaT8Y4IlwqtsLR6gvaRVbbLr/WSlEfBInmyqgeHgEyeym/wj/OY91W6sYSK8JpUtDqtCZBvQ8TYgrdQC4KAtZ3Ml/J0DGUPUkZOhHkImlG2w1X3kpO4xyV/tVUIeoSwZjRsDYwOZApTR7CAfgtnVEnBVgttkUU4JoJJUfaCfE6Zy20IjA9gC6lCSoN99ZpVScFUCJZsRMTYgbStC4GCT2c3kvSK82H3rUe1hYP1mFe1PFb2b5FFx9iCta/3goGxZTdtCHHwnvVSR7WDffVlVUnCqgmXb0A7J4K3rPZ9f7GaN28LjvGcCa1HSn8=", "templateCreationResult": true }'
+                      galleryFace:
+                        type: object
+                        example: '{ "pos": "F", "template": "+s7srwMAAAAjIwk4lxRP7ndqA+xGm8lCAAAAaQB+9JpSlzmsCZdqQzHTf01X/Wh+tJnNaAqPD2cKqLBBh4IKYKi8P6fwZJhDMCeAt1gLeH5NYtlqA3T3n+KhvUKBfxmbX0HOpQ6Wb7I8Jn9JqP90e09wNpTyhPtg8FO8tHqB8Z5dp8ag85mWsjgjgUBTAH+KsJjDlPBz8pQBUkBOjIQKZayyPakAmGu6wtuGSlP0g3dCmjZs8XHynPFUT7N+efaQVr7AUPVpYUg4Jn2+qwyGf7BkzGsNdPdjDKxGT4CC92SjvMCoCZWSvzjYfrFR8oF5T2XMlw2MCmMNpbhKhYDwmFW7x1TxkpRBOiOHtVD2fH+yZMxtDor1nfBTRrZ9ffaaVLXCVAuSbrjH2INLrfKAfbGYyGoKcfBh9VO4SoR99ZhVSMNUCJBtujkngbVS94CCsGXKkfBw8GEIrUZKgIMLmam3wqr2b5FBO9t8SFL1gHxPZ8uU9Izxn/RRuEqAgvCYqrfBqQmRkkQ72oG3rvWBfk5kypAJjPKd9Ky6Sn8=", "templateCreationResult": true }'
+                  message:
+                    type: string
+                    example: Templates Created
+        '400':
+          description: Template creation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Invalid Photo Size
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errorCode:
+                    type: number
+                    example: 401
+                  message:
+                    type: string
+                    example: Unauthorized

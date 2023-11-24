@@ -1,0 +1,56 @@
+const axios = require('axios');
+const dotenv = require('dotenv');
+const {onRequest} = require('./requestInterceptors');
+const {onResponse, onResponseError} = require('./responseInterceptors');
+
+dotenv.config();
+
+
+
+class API {
+    constructor(baseURL, headers){
+
+        this.instance = axios.create({
+            baseURL: 'https://login.microsoftonline.com/c8dfb640-8852-4e57-a63c-ba9f4c4f1c8b/oauth2/v2.0',
+
+            headers:headers
+        })
+    
+
+        this.instance.interceptors.request.use(this.requestInterceptor.bind(this));
+        this.instance.interceptors.response.use(this.responseInterceptor.bind(this), this.errorInterceptor.bind(this));
+      }
+  
+            requestInterceptor(config) {
+                if (config.method === 'post' && config.data && config.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
+                  config.data = qs.stringify(config.data);
+                }
+                return config;
+              }
+            
+              responseInterceptor(response) {
+                console.log(JSON.stringify(response.data));
+                return response.data;
+              }
+            
+              errorInterceptor(error) {
+                console.log(error);
+                return Promise.reject(error);
+              }
+            
+              post(endpoint, data) {
+                const requestData = {
+                    ...data,
+                    grant_type: 'client_credentials'
+                  };
+              
+                  return this.instance.post(endpoint, requestData);
+                }
+              
+}
+
+
+module.exports = {
+  
+    API
+};
