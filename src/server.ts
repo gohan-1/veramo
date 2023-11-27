@@ -81,6 +81,15 @@ const messagingRouter = MessagingRouter({
 })
 
 
+app.use((err, req, res, next) => {
+  res.status(err.status || 500).json({
+      success: false,
+      errorCode: err.status || 500,
+      message: err.message
+  });
+  console.error(`Error: ${err.message}`);
+});
+
 // app.use(RequestWithAgentRouter({ agent }))
 app.use(basePath, agentRouter)
 app.use(schemaPath, schemaRouter)

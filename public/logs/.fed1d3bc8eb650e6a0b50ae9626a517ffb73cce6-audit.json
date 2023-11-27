@@ -14,6 +14,16 @@
             "date": 1700843232572,
             "name": "public/logs/portal.log.2023-11-24",
             "hash": "2a4329876a8e2970a9a3cfdd7e16d7984163f8417437df4ad25432fc1b029565"
+        },
+        {
+            "date": 1701039356801,
+            "name": "public/logs/portal.log.2023-11-26",
+            "hash": "17d315d4e0f190adaece7c2f01fb89945a82c14abf468fe959ee02105bd36112"
+        },
+        {
+            "date": 1701043947862,
+            "name": "public/logs/portal.log.2023-11-27",
+            "hash": "571edb9e1ac20426abb646a11de26e206b58df7e7a2d9d0bcd8e2f932476d6c8"
         }
     ],
     "hashType": "sha256"

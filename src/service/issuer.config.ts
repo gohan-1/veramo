@@ -33,7 +33,7 @@ export const  getDid =async (provider:string,alias:string) => {
   })
 };
 
-export const didCreate =  async (provider:string,alias:string) => {
+export const didCreate =  async (provider,alias:string) => {
   return new Promise(async(resolve, reject) => {
 
      try{
@@ -46,3 +46,47 @@ export const didCreate =  async (provider:string,alias:string) => {
       
   })
 };
+
+export const didCheck = async (did) =>{
+  return new Promise(async(resolve, reject) => {
+
+    try{
+     console.log(1)
+       const identifier = await agent.didManagerGet({did : did})
+        console.log(2)
+        if (!identifier) throw Error('Identifier not found')
+        resolve(identifier)
+    }catch (error) {
+     console.log(3)
+     resolve(' ');
+ }
+     
+ })
+
+}
+
+
+export const createCredentials = async (data,vcParams) =>{
+  return new Promise(async(resolve, reject) => {
+
+    try{
+     console.log(1)
+     const credentials= await agent.createVerifiableCredential({
+      credential: {
+        issuer: { id: vcParams.issuerDid },
+        credentialSubject: data,
+      },
+      proofFormat: 'jwt',
+    })
+        if (!credentials) throw Error('Identifier not found')
+        resolve(credentials)
+    }catch (error) {
+  
+      reject(error);
+
+ }
+     
+ })
+
+}
+

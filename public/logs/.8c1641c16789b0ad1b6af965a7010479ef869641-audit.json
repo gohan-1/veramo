@@ -14,6 +14,16 @@
             "date": 1700843232571,
             "name": "public/logs/sdk.log.2023-11-24",
             "hash": "5715b25dc3a2e2dc7fcbef4cd08cebf385a309b5d457ea8ba01673af87880d1e"
+        },
+        {
+            "date": 1701039356800,
+            "name": "public/logs/sdk.log.2023-11-26",
+            "hash": "b8fcee8d55d180cb616847b1090dbb7bf6a00fe2e1fe25681f78a7aa8969f69d"
+        },
+        {
+            "date": 1701043947861,
+            "name": "public/logs/sdk.log.2023-11-27",
+            "hash": "efed93032fec3ef5791c40e2c54a77bede337dee25eb35e07fd0fa4da1a8dc28"
         }
     ],
     "hashType": "sha256"

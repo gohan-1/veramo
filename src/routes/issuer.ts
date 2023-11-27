@@ -3,7 +3,7 @@ import createError from 'http-errors'
 // import moment from 'moment'
 // import {didimportants} from '../config/importants'
 // // import {loggerWeb} from '../config/logger');
-import {createSchema,getSchemaDetails,getAllSchemaDetails,getDidDetails,createDid} from '../controllers/issue.controller.ts'
+import {createSchema,getSchemaDetails,getAllSchemaDetails,getDidDetails,createDid,checkDid,createCredential} from '../controllers/issue.controller.ts'
 // // import {verifySign} from '../middleware/verify.middleware');
 import bodyParser from 'body-parser'
 
@@ -97,19 +97,31 @@ issueRouter.get('/userDid', async (req,res,next)=>{
 
 issueRouter.post('/createCredential', async (req,res,next)=>{
     try {
-        const credential = await agent.createVerifiableCredential({
-            credential: {
-              issuer: { id: "did:key:z6MkhbaaBP1V5ecBTpJ45wNGFv2wYrStTmY6dQmCCxvD5Cb9" },
-              credentialSubject: {
-                id: 'did:key:z6MkwMMSnisBcFtHQoz7rD19fFhQD6EPzYBPxBZxv3VQg3ih',
-                created: 'locally',
-              },
-            },
-            proofFormat: 'jwt',
-          })
+        const issuerDid =  req.body.issuerDid   
+        const isDidValid = await checkDid(issuerDid)
+
+        if (isDidValid == ' '){
+            res.status(500).json({success:true, data: 'did is not valid', message: 'error in issuer did', status:201});
+            
+        }
+        const jsonSchema = await getSchemaDetails(req.body.schemaName);
+            if(!jsonSchema){
+                throw createError(400, 'Invalid Schema');
+            }
+
+
+     
+
+        const credential = await createCredential(req.body.credentialSubject, {documentType: req.body.schemaName,schemaUrl: `${req.protocol}://${req.headers.host}/schema/${jsonSchema.schemaName}`,
+            schema: jsonSchema,
+            userDid: req.body.id,
+            issuerDid:issuerDid
+        })
+
+       
         const data = credential
 
-        res.status(201).json({success:true, data: data, message: 'Schema created and submited successfully', status:201});
+        res.status(201).json({success:true, data:data, message: 'credential created and submited successfully', status:201});
     } catch (error) {
         next(error);
     }

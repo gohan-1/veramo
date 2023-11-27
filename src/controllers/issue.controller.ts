@@ -8,7 +8,7 @@ import moment  from 'moment'
 import {createSchemaInTable,getSchemaByKey,getAllSchema,}  from '../helpers/schema.helper.ts'
 // import {createVcRequest}  from '../service/issuerConfig'
 // import {loggerWeb} = from '../config/logger'
-import {getDid,didCreate} from '../service/issuer.config.ts'
+import {getDid,didCreate,didCheck,createCredentials} from '../service/issuer.config.ts'
 import {messageConstants, vcConstants}  from '../config/constants.ts'
 // const {createCryptograph} = from '../utils/tech5Integration'
 import dotenv  from 'dotenv'
@@ -62,6 +62,31 @@ export  const createDid = async (alias,provider)=>{
 
     try {
         return await didCreate(alias,provider);
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export const checkDid = async (did)=>{
+    try {
+        return await didCheck(did);
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+export const createCredential = async (data,vcParams)=>{
+    try {
+        const validationSchema = enjoi.schema(vcParams.schema.jsonSchema);
+        const validate = validationSchema.validate(data);
+        console.log('-----------------------------------------------------------------------')
+        console.log(validate)
+        console.log('-----------------------------------------------------------------------')
+        if(validate.error){
+            throw new Error(validate.error.details[0].message);
+        }
+
+        return await createCredentials(data,vcParams);
     } catch (error) {
         throw new Error(error.message);
     }

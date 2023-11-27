@@ -14,6 +14,16 @@
             "date": 1700843232569,
             "name": "public/logs/web.log.2023-11-24",
             "hash": "a49b70c9409aa1d8f3e0b38425be36b9a01b539493f9cf424207daa3d23cfb0b"
+        },
+        {
+            "date": 1701039356798,
+            "name": "public/logs/web.log.2023-11-26",
+            "hash": "211bb05723029298ac4971d447bf0aa8ecbcb5ecdcaa3e02eb6ab5964ee33d05"
+        },
+        {
+            "date": 1701043947860,
+            "name": "public/logs/web.log.2023-11-27",
+            "hash": "0f5194c10ad77bde38991002536ba7a4dbd6aaa652a1e1d8dfd7f5dae47ae62a"
         }
     ],
     "hashType": "sha256"
