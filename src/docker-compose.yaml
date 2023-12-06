@@ -1,0 +1,26 @@
+version: '3'
+
+networks:
+  veramo-ssi:
+
+services:
+  issuer.appnet:
+    image: earthid-appnet
+    tty: true
+    stdin_open: true
+    restart: always
+    build:
+      context: .
+      # args:
+      #   - NODE_VERSION=${NODE_IMAGE_VERSION}
+    environment:
+      - USER_TYPE=ISSUER
+      - DYNAMO_DB_ENDPOINT=http://issuer.appnet.local.dynamodb:8000
+    ports:
+      - 3200:3200
+    networks:
+      - veramo-ssi
+    volumes:
+      - ./public/logs/issuer:/var/lib/app/public/logs
+  
+  

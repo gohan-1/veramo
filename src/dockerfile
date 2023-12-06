@@ -1,0 +1,22 @@
+FROM node:lts-alpine AS build
+
+LABEL author="earthid"
+
+LABEL stage=builder
+
+RUN mkdir -p /var/lib/app
+
+WORKDIR /var/lib/app
+
+RUN npm i -g @babel/core @babel/cli
+
+COPY package*.json ./
+
+RUN npm i
+
+COPY . ./
+
+
+EXPOSE 3200
+
+CMD ["npm", "run", "start:docker"]

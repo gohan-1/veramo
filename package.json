@@ -17,9 +17,11 @@
     "LICENSE"
   ],
   "scripts": {
-    "start": "node --no-warnings --loader ts-node/esm src/bin/www.ts",
+    "start": "node --no-warnings --loader ts-node/esm ./dist/src/bin/www.ts",
     "test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" jest",
-    "build": "tsc",
+    "build": "tsc -p .",
+    "start:docker" :"node --no-warnings --loader ts-node/esm ./src/server.ts",
+
     "local": "node --no-warnings --loader ts-node/esm src/issue-local-verify.ts",
     "remote": "node --no-warnings --loader ts-node/esm src/issue-remote-verify-local.ts",
     "server": "node --no-warnings --loader ts-node/esm src/server.ts",

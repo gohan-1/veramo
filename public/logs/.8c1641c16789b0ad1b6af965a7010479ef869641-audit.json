@@ -6,24 +6,24 @@
     "auditLog": "public/logs/.8c1641c16789b0ad1b6af965a7010479ef869641-audit.json",
     "files": [
         {
-            "date": 1700756592295,
-            "name": "public/logs/sdk.log.2023-11-23",
-            "hash": "b93b22a5de6a17c32836f78c5ff82eeaae9b257c6e40a223a7bcc0f3a3244f2c"
+            "date": 1701249754845,
+            "name": "public/logs/sdk.log.2023-11-29",
+            "hash": "59921a6e9f83dbcfec84486e717829ce16a0c6a9c2087c4d39f81ac23cebcfeb"
         },
         {
-            "date": 1700843232571,
-            "name": "public/logs/sdk.log.2023-11-24",
-            "hash": "5715b25dc3a2e2dc7fcbef4cd08cebf385a309b5d457ea8ba01673af87880d1e"
+            "date": 1701408308875,
+            "name": "public/logs/sdk.log.2023-12-01",
+            "hash": "02fa8acb621e7d6483a34657815108b8baa70e38f01f6b64224968058240b948"
         },
         {
-            "date": 1701039356800,
-            "name": "public/logs/sdk.log.2023-11-26",
-            "hash": "b8fcee8d55d180cb616847b1090dbb7bf6a00fe2e1fe25681f78a7aa8969f69d"
+            "date": 1701703480574,
+            "name": "public/logs/sdk.log.2023-12-04",
+            "hash": "e628a2d5170e7b9f56676dab6db6b1ea6c112150c9e04e46d0ca39583b0baab2"
         },
         {
-            "date": 1701043947861,
-            "name": "public/logs/sdk.log.2023-11-27",
-            "hash": "efed93032fec3ef5791c40e2c54a77bede337dee25eb35e07fd0fa4da1a8dc28"
+            "date": 1701736304404,
+            "name": "public/logs/sdk.log.2023-12-05",
+            "hash": "505efe0b16d026262b8ffd1d77d1230a245f5c51ce973b1e8b43d37b0718a734"
         }
     ],
     "hashType": "sha256"

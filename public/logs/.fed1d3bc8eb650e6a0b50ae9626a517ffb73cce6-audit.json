@@ -6,24 +6,24 @@
     "auditLog": "public/logs/.fed1d3bc8eb650e6a0b50ae9626a517ffb73cce6-audit.json",
     "files": [
         {
-            "date": 1700756592295,
-            "name": "public/logs/portal.log.2023-11-23",
-            "hash": "83c0fd64aa0b625fc8643596b7557554ea11caee8ec1c3205fb3722d8ffcfc11"
+            "date": 1701249754846,
+            "name": "public/logs/portal.log.2023-11-29",
+            "hash": "7521ca56251029670d6879dd67d0191ceacccbf89e323011aaa8069d25be0f2d"
         },
         {
-            "date": 1700843232572,
-            "name": "public/logs/portal.log.2023-11-24",
-            "hash": "2a4329876a8e2970a9a3cfdd7e16d7984163f8417437df4ad25432fc1b029565"
+            "date": 1701408308876,
+            "name": "public/logs/portal.log.2023-12-01",
+            "hash": "721445ac70914846db83074e96d394b82c2ca6894d2afe4c6c72feb9b88e2cd8"
         },
         {
-            "date": 1701039356801,
-            "name": "public/logs/portal.log.2023-11-26",
-            "hash": "17d315d4e0f190adaece7c2f01fb89945a82c14abf468fe959ee02105bd36112"
+            "date": 1701703480577,
+            "name": "public/logs/portal.log.2023-12-04",
+            "hash": "929041661520a050b13bad1e4bdfafb07c7c43bb46332e53e328dc4261da9c83"
         },
         {
-            "date": 1701043947862,
-            "name": "public/logs/portal.log.2023-11-27",
-            "hash": "571edb9e1ac20426abb646a11de26e206b58df7e7a2d9d0bcd8e2f932476d6c8"
+            "date": 1701736304406,
+            "name": "public/logs/portal.log.2023-12-05",
+            "hash": "4745f0497b190aa2641289189cea5e0cfe9f0aa0d0b7e0564be0bcae963dba0c"
         }
     ],
     "hashType": "sha256"

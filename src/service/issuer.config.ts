@@ -74,6 +74,7 @@ export const createCredentials = async (data,vcParams) =>{
      const credentials= await agent.createVerifiableCredential({
       credential: {
         issuer: { id: vcParams.issuerDid },
+        metaData : {didMethod : vcParams.issuerDid.split(':')[1] },
         credentialSubject: data,
       },
       proofFormat: 'jwt',

@@ -14,6 +14,7 @@ import swaggerUi  from 'swagger-ui-express'
 ;
 import path  from 'path'
 
+import verifierRouter from './routes/verifier.ts'
 import issueRouter from './routes/issuer.ts'
 
 
@@ -73,6 +74,7 @@ app.use(cookieParser());
 
 
 app.use('/api/issuer', issueRouter);
+app.use('/api/verifier', verifierRouter);
 
 
 const messagingRouter = MessagingRouter({

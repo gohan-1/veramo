@@ -28,7 +28,7 @@ const issueRouter = Router();
 
 
 
-var parser = bodyParser.urlencoded({ extended: false });
+
 
 // const apiKey = uuid.v4();
 // function requestTrace( req ) {
@@ -67,7 +67,7 @@ issueRouter.get('/CreateDid', async (req,res,next)=>{
         const identifier = await getDidDetails(provider,alias)
 
         if(!identifier){
-            res.status(200).json({success:true, data:identifier, status:200});
+            res.status(400).json({success:true, data:identifier, status:200});
          }else{
             const did = await createDid(provider,alias)
             res.status(200).json({success:true, data:did, status:200});
@@ -79,16 +79,16 @@ issueRouter.get('/CreateDid', async (req,res,next)=>{
 
 issueRouter.get('/userDid', async (req,res,next)=>{
     try {
-        console.log(true)
+        const provider: any = req.query.provider
+        const alias: any = req.query.alias
+        const identifier = await getDidDetails(provider,alias)
 
-        
-        
-        const subject = await agent.didManagerGetOrCreate({ provider: 'did:key', alias: 'mySubject' })
-        console.log(`Created an identifier for a subject with ID: ${subject.did}`)
-
-
-        
-        res.status(200).json({success:true, data:subject, status:200});
+        if(!identifier){
+            res.status(400).json({success:true, data:identifier, status:200});
+         }else{
+            const did = await createDid(provider,alias)
+            res.status(200).json({success:true, data:did, status:200});
+         }     
     } catch (error) {
         next(error);
     }
@@ -101,7 +101,7 @@ issueRouter.post('/createCredential', async (req,res,next)=>{
         const isDidValid = await checkDid(issuerDid)
 
         if (isDidValid == ' '){
-            res.status(500).json({success:true, data: 'did is not valid', message: 'error in issuer did', status:201});
+            res.status(500).json({success:false, data: 'did is not valid', message: 'error in issuer did', status:201});
             
         }
         const jsonSchema = await getSchemaDetails(req.body.schemaName);
@@ -130,6 +130,7 @@ issueRouter.post('/createCredential', async (req,res,next)=>{
 issueRouter.post('/verify', async (req,res,next)=>{
     try {
         // loggerWeb.info(`Schema Name: ${req.params.schemaName}`);
+
         const credential = req.body.credential
         const verified = await agent.verifyCredential({ credential })
         console.log(`Credential verified: ${verified.verified}`)
