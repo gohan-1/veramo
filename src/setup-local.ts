@@ -104,7 +104,7 @@ const agent = createAgent<
         new SdrMessageHandler(),
       ],
     }),
-    new DIDComm([new DIDCommHttpTransport()]),
+    // new DIDComm([new DIDCommHttpTransport()]),
     new CredentialPlugin(),
     new SelectiveDisclosure(),
     new DIDDiscovery({
