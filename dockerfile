@@ -1,16 +1,29 @@
-FROM node:lts-alpine AS base
+FROM node:18.16.0-alpine as base
 
-WORKDIR /home/node/app
-
+# Add package file
 COPY package*.json ./
+COPY yarn.lock ./
 
-RUN npm i
+
+# Install deps
+RUN yarn install
+
+# Copy source
+COPY src ./src
+COPY tsconfig.json ./tsconfig.json
 
 COPY . .
 
 
-FROM base as production
 
-ENV NODE_PATH=./build
+# Start production image build
+FROM node:18.16.0-alpine
 
-RUN npm run start:docker
+# Copy node modules and build directory
+COPY --from=base ./node_modules ./node_modules
+
+
+
+
+# Expose port 3000
+EXPOSE 3002

@@ -1,5 +1,5 @@
-// import {findKey,forEach} from 'lodash';
-import {schemaRegex} from '../config/constants.ts';
+
+import {schemaRegex} from '../config/constants.js';
 
 export const buildJsonSchema = (inputJson) => {
     try {

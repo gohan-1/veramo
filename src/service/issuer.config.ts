@@ -3,12 +3,12 @@ import createError from 'http-errors'
 // import moment from 'moment'
 // import {didimportants} from '../config/importants'
 // // import {loggerWeb} from '../config/logger');
-import {createSchema,getSchemaDetails,getAllSchemaDetails} from '../controllers/issue.controller.ts'
+import {createSchema,getSchemaDetails,getAllSchemaDetails} from '../controllers/issue.controller.js'
 // // import {verifySign} from '../middleware/verify.middleware');
 import bodyParser from 'body-parser'
-import {} from '../controllers/issue.controller.ts'
+import {} from '../controllers/issue.controller.js'
 
-import  agent from '../setup-local.ts'
+import  agent from '../setup-local.js'
 import { json } from 'stream/consumers';
 import { sdkLogger } from '../config/logger.js';
 

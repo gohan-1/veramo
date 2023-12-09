@@ -14,8 +14,8 @@ import swaggerUi  from 'swagger-ui-express'
 ;
 import path  from 'path'
 
-import verifierRouter from './routes/verifier.ts'
-import issueRouter from './routes/issuer.ts'
+import verifierRouter from './routes/verifier.js'
+import issueRouter from './routes/issuer.js'
 
 
 import express from 'express'

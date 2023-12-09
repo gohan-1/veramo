@@ -1,4 +1,4 @@
-import  { dbConstants } from '../config/constants.ts';
+import  { dbConstants } from '../config/constants.js';
 
 export const verifiableCredentialSchema = {
     "AttributeDefinitions":{

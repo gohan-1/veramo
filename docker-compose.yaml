@@ -4,14 +4,14 @@ networks:
   veramo-ssi:
 
 services:
-  veramoIssuer:
+  veramoissuer:
     build:
       context: .
 
     volumes:
       - ./src:/home/node/app/src
       - ./nodemon.json:/home/node/app/nodemon.json
-    container_name: ts-node-docker
+    container_name: typescript
     networks:
       - veramo-ssi
     expose:

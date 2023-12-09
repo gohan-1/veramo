@@ -1,5 +1,5 @@
-import {dbConstants} from '../config/constants.ts'
-import {insertIntoTable,getDataFromTable,getAllDataFromTable}  from '../utils/dbHelper.ts';
+import {dbConstants} from '../config/constants.js'
+import {insertIntoTable,getDataFromTable,getAllDataFromTable}  from '../utils/dbHelper.js';
 
 export  const createSchemaInTable = async (schema, expiration, dependantSchemas) =>{
     try {

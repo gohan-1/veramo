@@ -1,15 +1,15 @@
 
 import fs  from 'fs'
 import path  from 'path'
-import {forEach, keys}  from 'lodash'
+
 import enjoi  from 'enjoi'
-import {buildJsonSchema}  from '../utils/jsonSchema.ts'
+import {buildJsonSchema}  from '../utils/jsonSchema.js'
 import moment  from 'moment'
-import {createSchemaInTable,getSchemaByKey,getAllSchema,}  from '../helpers/schema.helper.ts'
+import {createSchemaInTable,getSchemaByKey,getAllSchema,}  from '../helpers/schema.helper.js'
 // import {createVcRequest}  from '../service/issuerConfig'
 // import {loggerWeb} = from '../config/logger'
-import {getDid,didCreate,didCheck,createCredentials} from '../service/issuer.config.ts'
-import {messageConstants, vcConstants}  from '../config/constants.ts'
+import {getDid,didCreate,didCheck,createCredentials} from '../service/issuer.config.js'
+import {messageConstants, vcConstants}  from '../config/constants.js'
 // const {createCryptograph} = from '../utils/tech5Integration'
 import dotenv  from 'dotenv'
 dotenv.config();

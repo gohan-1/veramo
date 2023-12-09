@@ -1,7 +1,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const {forEach, keys} = require('lodash')
+
 const enjoi = require('enjoi')
 const {buildJsonSchema} = require('../utils/jsonSchema')
 const moment = require('moment')
