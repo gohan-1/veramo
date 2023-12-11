@@ -21,7 +21,7 @@
     "test": "cross-env NODE_OPTIONS=\"--experimental-vm-modules\" jest",
     "build": "tsc -p .",
     "start:docker": "node --no-warnings --loader ts-node/esm ./src/server.ts",
-    "local": "node --no-warnings --loader ts-node/esm src/issue-local-verify.ts",
+    "local": "yarn ts-node --esm ./src/server.ts",
     "remote": "node --no-warnings --loader ts-node/esm src/issue-remote-verify-local.ts",
     "server": "node --no-warnings --loader ts-node/esm src/server.ts",
     "format": "prettier -w '**/**.{js,ts,json,md,yml}'"
