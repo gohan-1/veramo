@@ -29,6 +29,11 @@
             "date": 1702140662955,
             "name": "public/logs/sdk.log.2023-12-09",
             "hash": "a8be3a9a78d9ed3da7134ad0829ba70662d77581027c9b73407aa7ea1897a33c"
+        },
+        {
+            "date": 1702286276379,
+            "name": "public/logs/sdk.log.2023-12-11",
+            "hash": "01828482d1aab32bfdbdc6396d20fc11ed54a79a72bfc38c5d08791c84bd8d15"
         }
     ],
     "hashType": "sha256"
